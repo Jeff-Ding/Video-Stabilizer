@@ -4,7 +4,12 @@
 %%% User provides video length and specifies input and output folder, both 
 %%%     must be valid (output folder will be create if non-existing
 
-function stabilize(Gauss_levels, input_folder, output_folder, file_type, video_length)
+function stabilize(input_folder, output_folder, file_type, video_length, Gauss_levels)
+
+    % default Gauss_levels=1 if not specified
+    if nargin < 5
+        Gauss_levels = 1;
+    end
     
     % check input folder
     if(~isdir(input_folder))
@@ -98,6 +103,7 @@ function [A, T] = calc_motion(f_x, f_y, f_t, roi)
     f_x = f_x(ind); f_y = f_y(ind); f_t = f_t(ind);
     xf_x = x.*f_x; xf_y = x.*f_y; yf_x = y.*f_x; yf_y = y.*f_y;
     
+    % see readme for algorithm details/mathematical basis
     M(1,1) = sum( xf_x .* xf_x );   M(1,2) = sum( xf_x .* yf_x );   M(1,3) = sum( xf_x .* xf_y );
     M(1,4) = sum( xf_x .* yf_y );   M(1,5) = sum( xf_x .* f_x );    M(1,6) = sum( xf_x .* f_y );
     M(2,1) = M(1,2);                M(2,2) = sum( yf_x .* yf_x );   M(2,3) = sum( yf_x .* xf_y );
