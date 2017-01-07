@@ -15,10 +15,28 @@ The stabilization technique assumes the operator is attempting to keep the camer
 
 To begin, the motion between two 2D frames ***f(x,y,t)*** and ***f(x,y,t−1)*** can be described with
 an affine model, in which the succeeding frame can be expressed in terms of scaling, rotating, and translating (in 2 dimensions) the current frame. This can be represented as the parameters
-***m<sub>1</sub>***, ***m<sub>2</sub>***, ***m<sub>3</sub>***, ***m<sub>4</sub>*** in the scaling and rotation matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and parameters ***m<sub>5</sub>*** and ***m<sub>6</sub>*** in the translation ***T = [m<sub>5</sub>; m<sub>6</sub>]*** so that ***[x'; y'] = A[x; y] + T***, where ***(x', y')*** is the position of the subsequent frame. In other words:
+***m<sub>1</sub>***, ***m<sub>2</sub>***, ***m<sub>3</sub>***, ***m<sub>4</sub>*** in the scaling and rotation matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and parameters ***m<sub>5</sub>*** and ***m<sub>6</sub>*** in the translation vector ***T = [m<sub>5</sub>; m<sub>6</sub>]*** so that ***[x'; y'] = A[x; y] + T***, where ***(x', y')*** is the position of the subsequent frame. In other words:
  
 <p align="center"><b><i>f(x,y,t) = f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)</i></b>.</p>
 
 The objective is to find the next frame that minimizes the difference from the current frame. This means minimizing the quadratic error function:
 
-<p align="center"><b><i>E(m) = ∑<sub>x,y∈Ω</sub>[f(x,y,t) - f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)]<sup>2</sup></i></b></p>
+<p align="center"><b><i>E(M) = ∑<sub>x,y∈Ω</sub>[f(x,y,t) - f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)]<sup>2</sup></i></b>,</p>
+
+where ***M = (m<sub>1</sub> ... m<sub>6</sub>)<sup>T</sup>*** and Ω a region-of-interest to perform the calculation over (the dimensions of the video frame). The error function simplifies using a first
+order truncated Taylor series expansion:
+
+<p align="center">
+ <b><i>
+  E(m) ≈ ∑<sub>x,y∈Ω</sub>[f<sub>t</sub> - (m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub> - x)f<sub>x</sub> -   (m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub> - y)f<sub>y</sub>]<sup>2</sup>
+  <br>
+  = ∑<sub>x,y∈Ω</sub>[k - C<sup>T</sup>M]<sup>2</sup>
+ </i></b>,
+</p>
+
+where
+<p align="center">
+ <b><i>k = f<sub>t</sub> + xf<sub>x</sub> + yf<sub>y</sub></i></b>
+ and
+ <b><i>C<sup>T</sup> = (xf<sub>x</sub> yf<sub>x</sub> xf<sub>y</sub> yf<sub>y</sub> f<sub>x</sub> f<sub>y</sub>)</i></b>.
+</p>
