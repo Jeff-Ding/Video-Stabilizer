@@ -38,5 +38,21 @@ where
 <p align="center">
  <b><i>k = f<sub>t</sub> + xf<sub>x</sub> + yf<sub>y</sub></i></b>
  and
- <b><i>C<sup>T</sup> = (xf<sub>x</sub> yf<sub>x</sub> xf<sub>y</sub> yf<sub>y</sub> f<sub>x</sub> f<sub>y</sub>)</i></b>.
+ <b><i>C<sup>T</sup> = (xf<sub>x</sub> yf<sub>x</sub> xf<sub>y</sub> yf<sub>y</sub> f<sub>x</sub> f<sub>y</sub>)</i></b>
 </p>
+
+and temporal and spatial derivatives given by the convolutions:
+
+<p align="center">
+ <b><i>
+ f<sub>x</sub>(x,y,t) = (0.5f(x,y,t) + 0.5f(x,y,t−1)) ★ d(x) ★ p(y)<br>
+ f<sub>y</sub>(x,y,t) = (0.5f(x,y,t) + 0.5f(x,y,t−1)) ★ p(x) ★ d(y)<br>
+ f<sub>t</sub>(x,y,t) = (0.5f(x,y,t) - 0.5f(x,y,t−1)) ★ p(x) ★ p(y)
+ </i></b>.
+</p>
+
+With the 1D filters ***d(x) = (0.5 -0.5), p(x) = (0.5 0.5)*** and ***d(y) = d(x)<sup>T</sup>, p(y) = p(x)<sup>T</sup>***.
+
+With the error function now linear with respect to ***M***, we can minimize by differentiating and setting equal to zero:
+
+<p align="center"><b><i>dE(M)/dM = ∑<sub>Ω</sub>2c[k - C<sup>T</sup>M] = 0</i></b>.</p>
