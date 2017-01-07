@@ -16,3 +16,9 @@ The stabilization technique assumes the operator is attempting to keep the camer
 To begin, the motion between two 2D frames ***f(x,y,t)*** and ***f(x,y,t−1)*** can be described with
 an affine model, in which the succeeding frame can be expressed in terms of scaling, rotating, and translating (in 2 dimensions) the current frame. This can be represented as the parameters
 ***m<sub>1</sub>***, ***m<sub>2</sub>***, ***m<sub>3</sub>***, ***m<sub>4</sub>*** in the scaling and rotation matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and parameters ***m<sub>5</sub>*** and ***m<sub>6</sub>*** in the translation ***T = [m<sub>5</sub>; m<sub>6</sub>]*** so that ***[x'; y'] = A[x; y] + T***, where ***(x', y')*** is the position of the subsequent frame. In other words:
+ 
+<p align="center"><b><i>f(x,y,t) = f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)</i></b>.</p>
+
+The objective is to find the next frame that minimizes the difference from the current frame. This means minimizing the quadratic error function:
+
+<p align="center"><b><i>E(m) = ∑<sub>x,y∈Ω</sub>[f(x,y,t) - f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)]<sup>2</sup></i></b></p>
