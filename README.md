@@ -56,3 +56,11 @@ With the 1D filters ***d(x) = (0.5 -0.5), p(x) = (0.5 0.5)*** and ***d(y) = d(x)
 With the error function now linear with respect to ***M***, we can minimize by differentiating and setting equal to zero:
 
 <p align="center"><b><i>dE(M)/dM = ∑<sub>Ω</sub>2c[k - C<sup>T</sup>M] = 0</i></b>.</p>
+
+Solving yields the parameter ***m***'s:
+
+<p align="center"><b><i>M = [∑<sub>Ω</sub>CC<sup>T</sup>]<sup>-1</sup>[∑<sub>Ω</sub>Ck]</i></b>.</p>
+
+The use of these derivatives limits the range of motion able to be estimated, so each frame is separated as a stack of its coarse-to-fine details by applying a Gaussian pyramid of low-pass filters to extract the information at each level of detail. Starting at the bottom, the motion from the coarsest level is used to warp the next, more finely detailed level, and so on until the final, full resolution level is reached. Thus, the coarser motions are first estimated and then refined by the finer motions. Let ***L*** be the number of levels in such a Gaussian pyramid **(this is the Gauss_level parameter)**.
+
+To avoid excessive blurring and calculation, at each pyramid level ***l*** we warp the original frame with the affine matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and translation vector ***T = [2<sup>l-1</sup>m<sub>5</sub>; 2<sup>l-1</sup>m<sub>6</sub>]***
