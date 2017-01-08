@@ -71,4 +71,4 @@ To avoid excessive blurring, instead of warping at each level with the motion of
  <b><i>T = A<sub>2</sub>T<sub>1</sub> + T<sub>2</sub></i></b>.
 </p>
 
-In this way, instead of applying warps at every level we can stack and accumulate the warps by repeating this for all levels ***l***
+In this way, instead of applying warps at every level, we can stack and accumulate the warps by repeating this for all levels ***l*** and end up with one matrix and one vector describing the motion between two frames. The motion parameters are calculated for every pair of successive frames in the video, and then, moving backwards from the last frame, each frame is warped to the previous frame so that all frames end up being warped to the last frame. This process produces a single, stabilized video.
