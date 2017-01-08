@@ -63,4 +63,12 @@ Solving yields the parameter ***m***'s:
 
 The use of these derivatives limits the range of motion able to be estimated, so each frame is separated as a stack of its coarse-to-fine details by applying a Gaussian pyramid of low-pass filters to extract the information at each level of detail. Starting at the bottom, the motion from the coarsest level is used to warp the next, more finely detailed level, and so on until the final, full resolution level is reached. Thus, the coarser motions are first estimated and then refined by the finer motions. Let ***L*** be the number of levels in such a Gaussian pyramid **(this is the Gauss_level parameter)**.
 
-To avoid excessive blurring and calculation, at each pyramid level ***l*** we warp the original frame with the affine matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and translation vector ***T = [2<sup>l-1</sup>m<sub>5</sub>; 2<sup>l-1</sup>m<sub>6</sub>]***
+To avoid excessive blurring, instead of warping at each level with the motion of the previous level all the way up to ***l = 1*** (the full resolution video), we instead apply all warps to the top-level frame. This means at each pyramid level ***l*** we warp the original frame with the affine matrix ***A = [m<sub>1</sub> m<sub>2</sub>; m<sub>3</sub> m<sub>4</sub>]*** and translation vector ***T = [2<sup>l-1</sup>m<sub>5</sub>; 2<sup>l-1</sup>m<sub>6</sub>]***. Note that applying the warp ***A<sub>1</sub>***, ***T<sub>1</sub>*** followed by the warp ***A<sub>2</sub>***, ***T<sub>2</sub>*** is the equivalent of applying
+
+<p align="center">
+ <b><i>A = A<sub>2</sub>A<sub>1</sub></i></b>
+ and
+ <b><i>T = A<sub>2</sub>T<sub>1</sub> + T<sub>2</sub></i></b>.
+</p>
+
+In this way, instead of applying warps at every level we can stack and accumulate the warps by repeating this for all levels ***l***
