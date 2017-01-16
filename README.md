@@ -1,5 +1,4 @@
 # Video Stabilizer
-This MATLAB program takes in a handheld (or otherwise shaky or unstable) video and attempts to output a motion stabilized version of it.
 
 ## Usage
 Video must be in the form of an image sequence with file names *1, 2, 3,...,n* and the file extension, where *n* is the number of frames in the video. All images in the sequence must be in one directory. Stabilization is performed by invoking the **stabilize()** function with parameters:
@@ -23,7 +22,7 @@ The objective is to find the next frame that minimizes the difference from the c
 
 <p align="center"><b>E(M) = ∑<sub>x,y∈Ω</sub>[f(x,y,t) - f(m<sub>1</sub>x + m<sub>2</sub>y + m<sub>5</sub>, m<sub>3</sub>x + m<sub>4</sub>y + m<sub>6</sub>, t−1)]<sup>2</sup></b>,</p>
 
-where **M = (m<sub>1</sub> ... m<sub>6</sub>)<sup>T</sup>** and Ω a region-of-interest to perform the calculation over (the dimensions of the video frame). The error function simplifies using a first
+where **M = (m<sub>1</sub> ... m<sub>6</sub>)<sup>T</sup>** and **Ω** a region-of-interest to perform the calculation over (the dimensions of the video frame). The error function simplifies using a first
 order truncated Taylor series expansion:
 
 <p align="center">
@@ -74,4 +73,4 @@ To avoid excessive blurring, instead of warping at each level with the motion of
 In this way, instead of applying warps at every level, we can stack and accumulate the warps by repeating this for all levels **l** and end up with one matrix and one vector describing the motion between two frames. The motion parameters are calculated for every pair of successive frames in the video, and then, moving backwards from the last frame, each frame is warped to the previous frame so that all frames end up being warped to the last frame. This process produces a single, stabilized video.
 
 ## References
-Stabilization technique based on the one described in http://www.cs.dartmouth.edu/farid/downloads/publications/tr07.pdf.
+Stabilization technique based on http://www.cs.dartmouth.edu/farid/downloads/publications/tr07.pdf.
