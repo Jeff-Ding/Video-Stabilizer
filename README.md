@@ -1,8 +1,8 @@
 # Video Stabilizer
-- [Usage](#)
-- [Example](#)
-- [Details](#)
-- [References](#)
+- [Usage](#usage)
+- [Example](#example)
+- [Details](#details)
+- [References](#references)
  
 ## Usage
 Video must be in the form of an image sequence with file names *1, 2, 3,...,n* and the file extension, where *n* is the number of frames in the video. All images in the sequence must be in one directory. Stabilization is performed by invoking the **stabilize()** function with parameters:
