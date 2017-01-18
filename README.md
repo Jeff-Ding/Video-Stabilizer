@@ -1,4 +1,6 @@
 # Video Stabilizer
+This MATLAB program takes in a handheld (or otherwise shaky or unstable) video and outputs a motion stabilized version of it.
+
 - [Usage](#usage)
 - [Example](#example)
 - [Details](#details)
