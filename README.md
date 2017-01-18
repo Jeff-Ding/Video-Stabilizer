@@ -9,6 +9,11 @@ Video must be in the form of an image sequence with file names *1, 2, 3,...,n* a
 * **file_type:** File extension of input image sequence.
 * **video_length:** Number of frames of input video.
 
+## Example
+[Original Video](https://vimeo.com/200021989/b444cff847)
+
+[Stabilized Video](https://vimeo.com/200022148/6799054385) *(Gauss_levels = 5)*
+
 ## Details
 The stabilization technique assumes the operator is attempting to keep the camera stationary but cannot do so because of prevailing conditions, including environment, equipment, and operator skill. The technique attempts to negate motion from the current frame to the next frame by detecting such motion and warping the current frame to the position and rotation of the next frame. This is done in succession backwards from the end of the video so that all frames are warped to the last frame in the video.
 
