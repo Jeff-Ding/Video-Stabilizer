@@ -3,6 +3,10 @@
 %%%     extension and the prefix 1, 2, 3,...,n for an n-frame long video
 %%% User provides video length and specifies input and output folder, both 
 %%%     must be valid (output folder will be create if non-existing
+% 
+% Modified by Frank Engel (fengel@usgs.gov) to handle input images with
+% numbers in the suffix. Also enables user to select a mask of data to
+% exclude from stabilization.
 
 function stabilize(input_folder, output_folder, file_type, video_length, Gauss_levels)
 
@@ -22,7 +26,12 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     
     % get video dimensions and set region of interest to entire video
     [height, width, length] = size(BW);
-    roi = ones(height, width);
+    
+    h1 = figure('name','Select ROI'); clf
+    imshow(color(:,:,:,1));
+    uiwait(msgbox('Draw mask on image','Draw a mask on image to exclude from analysis','modal'));
+    [roi_inv,~,~]=roipoly;
+    roi = double(~roi_inv);
     
     % calculate motion between each pair of frames
     A_cummulative = eye(2);
@@ -187,10 +196,13 @@ end
 % -------------------------------------------------------------------------
 %%% Loads image sequence
 function [BW, color] = load_video(input_folder, file_type, video_length)
-
+Files = dir([input_folder filesep '*.' file_type]);
+NumFrames = length(Files);
+if NumFrames ~= video_length; return; end
+%allframes = cell(1, NumFrames);
     for i = 1:video_length
         read_path = sprintf('%s/%d', input_folder, i);
-        frame = imread(read_path, file_type);
+        frame = imread(fullfile(input_folder, Files(i).name));
         frame = frame(:,:,1:3);
         color(:,:,:,i) = frame;
         BW(:,:,i) = double(rgb2gray(frame));
