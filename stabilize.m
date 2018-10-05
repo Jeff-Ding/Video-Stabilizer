@@ -31,7 +31,12 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     imshow(color(:,:,:,1));
     uiwait(msgbox('Draw mask on image','Draw a mask on image to exclude from analysis','modal'));
     [roi_inv,~,~]=roipoly;
-    roi = double(~roi_inv);
+    if ~isempty(roi_inv)  % User did not cancel roipoly
+        roi = double(~roi_inv);
+    else
+        roi = ones(height,width);
+    end
+    close (h1)
     
     % calculate motion between each pair of frames
     A_cummulative = eye(2);
