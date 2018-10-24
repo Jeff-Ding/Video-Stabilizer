@@ -1,3 +1,6 @@
+# Purpose of this Clone
+I created this clone of the original [Video Stabilizer](https://github.com/Jeff-Ding/Video-Stabilizer) project in order to modify it for use in stabilzing video shot mainly from Drones that are being used to derive surface velocities with image velocimetry techniques like PIV. I wanted to be able to create new functionality without issuing Pull Requests (at least for now. My additions are surficial mostly, and credit should be given to Jeff Ding and his team for the original methods.
+
 # Video Stabilizer
 This MATLAB program takes in a handheld (or otherwise shaky or unstable) video and outputs a motion stabilized version of it.
 

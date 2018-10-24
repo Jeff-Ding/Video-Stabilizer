@@ -66,7 +66,7 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     close(h);
     
     % write video to output folder
-    write_video(color, output_folder, file_type);
+    write_video(color, output_folder, input_folder, file_type);
 end
 
 % -------------------------------------------------------------------------
@@ -217,15 +217,19 @@ end
 
 % -------------------------------------------------------------------------
 %%% Writes images sequence to specified output folder
-function write_video(color, output_folder, file_type)
+function write_video(color, output_folder, input_folder, file_type)
 
     % get video length in frames
     [~, ~, ~, length] = size(color);
     
     % create output folder and write output image sequence
+    Files = dir([input_folder filesep '*.' file_type]);
     mkdir(output_folder);
     for i = 1:length
-        write_path = sprintf('%s/%d.%s', output_folder, i, file_type);
+        [~,outname,~] = fileparts(Files(i).name);
+        tok = strsplit(outname,'_');
+        outname = sprintf('%s%05d%s',['s_' tok{1} '_'],i, ['.' file_type]);
+        write_path = fullfile(output_folder,outname);
         imwrite(color(:,:,:,i), write_path);
     end
     
