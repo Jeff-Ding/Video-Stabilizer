@@ -43,12 +43,16 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     T_cummulative = zeros(2,1);
     h = waitbar(0, 'Estimating motion...');
     for i = 1:(length-1)
+        if (mod(i,10) == 0)
+            waitbar(i/(length-1),h)
+        end
         [A,T] = align_frames(BW(:,:,i+1), BW(:,:,i), roi, Gauss_levels);
         A_all(:,:,i) = A;
         T_all(:,:,i) = T;
         [A_cummulative, T_cummulative] = warp_accumulate(A_cummulative, T_cummulative, A, T);
-        waitbar(i/(length-1));
+        
     end
+    waitbar(1);
     close(h)
     
     % stabilize to last frame
@@ -205,14 +209,19 @@ Files = dir([input_folder filesep '*.' file_type]);
 NumFrames = length(Files);
 if NumFrames ~= video_length; return; end
 %allframes = cell(1, NumFrames);
+hwait = waitbar(0,'Loading video or images...');
     for i = 1:video_length
+        if (mod(i,10) == 0)
+            waitbar(i/video_length,hwait)
+        end
         read_path = sprintf('%s/%d', input_folder, i);
         frame = imread(fullfile(input_folder, Files(i).name));
         frame = frame(:,:,1:3);
         color(:,:,:,i) = frame;
         BW(:,:,i) = double(rgb2gray(frame));
     end
-    
+    waitbar(1,hwait)
+    close(hwait)
 end
 
 % -------------------------------------------------------------------------
@@ -225,13 +234,19 @@ function write_video(color, output_folder, input_folder, file_type)
     % create output folder and write output image sequence
     Files = dir([input_folder filesep '*.' file_type]);
     mkdir(output_folder);
+    hwait = waitbar(0,'Saving stabilized images...');
     for i = 1:length
+        if (mod(i,10) == 0)
+            waitbar(i/length,hwait)
+        end
         [~,outname,~] = fileparts(Files(i).name);
         tok = strsplit(outname,'_');
         outname = sprintf('%s%05d%s',['s_' tok{1} '_'],i, ['.' file_type]);
         write_path = fullfile(output_folder,outname);
         imwrite(color(:,:,:,i), write_path);
     end
+    waitbar(1,hwait)
+    close(hwait)
     
     % check result
     if(~isdir(output_folder))
