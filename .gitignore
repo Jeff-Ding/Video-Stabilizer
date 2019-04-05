@@ -1,6 +1,13 @@
+# Application Specific #
+###################
+/stabilized
+/VideoStabilizer
+/VideoStabilizer_resources
+
 # Matlab Specific #
 ###################
 *.asv
+*.prj
 
 # Compiled source #
 ###################
