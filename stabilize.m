@@ -38,6 +38,7 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     end
     close (h1)
     
+    tic
     % calculate motion between each pair of frames
     A_cummulative = eye(2);
     T_cummulative = zeros(2,1);
@@ -71,6 +72,7 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     
     % write video to output folder
     write_video(color, output_folder, input_folder, file_type);
+    toc
 end
 
 % -------------------------------------------------------------------------
