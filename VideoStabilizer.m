@@ -8,7 +8,7 @@
 %                   (https://github.com/Jeff-Ding/Video-Stabilizer)
 % Modifications by: Frank Engel
 
-
+clc
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel')
 [input_folder] = ...
     uigetdir(pwd, 'Select folder containing images to stabilize');
@@ -30,11 +30,8 @@ if ischar(input_folder) % The user did not hit "Cancel"
         file_type = answer{1};
         video_length = str2num(answer{2});
         Gauss_levels = str2num(answer{3});
-        
-        
-        tic
+       
         stabilize(input_folder, output_folder, file_type, video_length, Gauss_levels)
-        toc
     end
 else
     return

@@ -9,7 +9,7 @@
 % exclude from stabilization.
 
 function stabilize(input_folder, output_folder, file_type, video_length, Gauss_levels)
-
+    
     % default Gauss_levels=1 if not specified
     if nargin < 5
         Gauss_levels = 1;
@@ -21,11 +21,14 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
         return;     
     end
 
-    % load black-and-white and full color video
-    [BW, color] = load_video(input_folder, file_type, video_length);
+    % load first 2 frames of black-and-white and full color video
+    %[BW, color] = load_video(input_folder, file_type, video_length);
+    [~, ~, imfiles] = init_output(input_folder,file_type,video_length);
+    [BW, color] = load_video_framepair(input_folder, file_type, [1 2]);
     
     % get video dimensions and set region of interest to entire video
-    [height, width, length] = size(BW);
+    [height, width, ~] = size(BW);
+    length = video_length;
     
     h1 = figure('name','Select ROI'); clf
     imshow(color(:,:,:,1));
@@ -38,6 +41,7 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     end
     close (h1)
     
+    tic
     % calculate motion between each pair of frames
     A_cummulative = eye(2);
     T_cummulative = zeros(2,1);
@@ -46,7 +50,11 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
         if (mod(i,10) == 0)
             waitbar(i/(length-1),h)
         end
-        [A,T] = align_frames(BW(:,:,i+1), BW(:,:,i), roi, Gauss_levels);
+        if i == 1
+        else
+            [BW, color] = load_video_framepair(input_folder, file_type, [i i+1]);
+        end
+        [A,T] = align_frames(BW(:,:,2), BW(:,:,1), roi, Gauss_levels);
         A_all(:,:,i) = A;
         T_all(:,:,i) = T;
         [A_cummulative, T_cummulative] = warp_accumulate(A_cummulative, T_cummulative, A, T);
@@ -61,16 +69,22 @@ function stabilize(input_folder, output_folder, file_type, video_length, Gauss_l
     A_cummulative = eye(2);
     T_cummulative = zeros(2, 1);
     for i = (length-1):-1:1
+        if (mod(i,10) == 0)
+            waitbar(i/(length-1),h)
+        end
         [A_cummulative, T_cummulative] = warp_accumulate(A_cummulative, T_cummulative, A_all(:,:,i), T_all(:,:,i));
-        color(:,:,1,i) = warp(double(color(:,:,1,i)), A_cummulative, T_cummulative);
-        color(:,:,2,i) = warp(double(color(:,:,2,i)), A_cummulative, T_cummulative);
-        color(:,:,3,i) = warp(double(color(:,:,3,i)), A_cummulative, T_cummulative);
+        if i == 1
+        else
+            [~, color] = load_video_framepair(input_folder, file_type, [i i]);
+        end
+        color(:,:,1,1) = warp(double(color(:,:,1,1)), A_cummulative, T_cummulative);
+        color(:,:,2,1) = warp(double(color(:,:,2,1)), A_cummulative, T_cummulative);
+        color(:,:,3,1) = warp(double(color(:,:,3,1)), A_cummulative, T_cummulative);
+        write_frame(color, output_folder, input_folder, file_type, i)
         waitbar((length-1-i)/(length-1));
     end
     close(h);
-    
-    % write video to output folder
-    write_video(color, output_folder, input_folder, file_type);
+    toc
 end
 
 % -------------------------------------------------------------------------
@@ -224,6 +238,30 @@ hwait = waitbar(0,'Loading video or images...');
     close(hwait)
 end
 
+function [BW, color] = load_video_framepair(input_folder, file_type, frame_index)
+Files = dir([input_folder filesep '*.' file_type]);
+j=1;
+    for i = frame_index(1):frame_index(2)
+        read_path = sprintf('%s/%d', input_folder, i);
+        frame = imread(fullfile(input_folder, Files(i).name));
+        frame = frame(:,:,1:3);
+        color(:,:,:,j) = frame;
+        BW(:,:,j) = double(rgb2gray(frame));
+        j=j+1;
+    end
+end
+
+function [BW, color,imfiles] = init_output(input_folder,file_type,video_length)
+    imfiles = dir([input_folder filesep '*.' file_type]);
+    read_path = sprintf('%s/%d', input_folder, 1);
+    frame = imread(fullfile(input_folder, imfiles(1).name));
+    frame = frame(:,:,1:3);
+    [rows, cols, channels] = size(frame);
+    clear frames
+    color = nan(rows,cols,channels,video_length); %(:,:,:,i) = frame;
+    BW = nan(rows,cols,video_length); %= double(rgb2gray(frame));
+end
+
 % -------------------------------------------------------------------------
 %%% Writes images sequence to specified output folder
 function write_video(color, output_folder, input_folder, file_type)
@@ -253,5 +291,25 @@ function write_video(color, output_folder, input_folder, file_type)
         disp('Error: unable to write to output folder.');
         return;     
     end
+
+end
+
+function write_frame(color, output_folder, input_folder, file_type, frame_number)
+
+% create output folder and write output image sequence
+Files = dir([input_folder filesep '*.' file_type]);
+mkdir(output_folder);
+
+[~,outname,~] = fileparts(Files(frame_number).name);
+tok = strsplit(outname,'_');
+outname = sprintf('%s%05d%s',['s_' tok{1} '_'],frame_number, ['.' file_type]);
+write_path = fullfile(output_folder,outname);
+imwrite(color(:,:,:,1), write_path);
+
+% check result
+if(~isdir(output_folder))
+    disp('Error: unable to write to output folder.');
+    return;
+end
 
 end
