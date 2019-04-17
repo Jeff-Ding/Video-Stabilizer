@@ -67,9 +67,10 @@ h = waitbar(0, 'Stabilizing...');
 % stable(:,:,length) = BW(:,:,length); % match last frame
 A_cummulative = eye(2);
 T_cummulative = zeros(2, 1);
+j=1;
 for i = (length-1):-1:1
-    if (mod(i,10) == 0)
-        waitbar(i/(length-1),h)
+    if (mod(j,10) == 0)
+        waitbar(j/(length-1),h)
     end
     [A_cummulative, T_cummulative] = warp_accumulate(A_cummulative, T_cummulative, A_all(:,:,i), T_all(:,:,i));
     if i == 1
@@ -80,6 +81,7 @@ for i = (length-1):-1:1
     color(:,:,2,1) = warp(double(color(:,:,2,1)), A_cummulative, T_cummulative);
     color(:,:,3,1) = warp(double(color(:,:,3,1)), A_cummulative, T_cummulative);
     write_frame(color, output_folder, input_folder, file_type, i)
+    j=j+1;
 end
 % Write last frame
 [~, color] = load_video_framepair(input_folder, file_type, [length length]);
@@ -260,8 +262,10 @@ frame = imread(fullfile(input_folder, imfiles(1).name));
 frame = frame(:,:,1:3);
 [rows, cols, channels] = size(frame);
 clear frames
-color = nan(rows,cols,channels,video_length); %(:,:,:,i) = frame;
-BW = nan(rows,cols,video_length); %= double(rgb2gray(frame));
+% color = nan(rows,cols,channels,video_length); %(:,:,:,i) = frame;
+% BW = nan(rows,cols,video_length); %= double(rgb2gray(frame));
+color = [];
+BW = [];
 end
 
 % -------------------------------------------------------------------------
