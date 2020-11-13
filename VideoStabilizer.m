@@ -38,11 +38,12 @@ if ischar(input_folder) % The user did not hit "Cancel"
             c=[dir([output_folder '/*.jpg']); dir([output_folder '/*.bmp']); dir([output_folder '/*.tif']); dir([output_folder '/*.png'])];
             wldfileNames = { b.name };
             simgfileNames = { c.name };
+            [~,~,wld_ext] = fileparts(b(1).name);
             for k = 1 : length(b)
                 thisFileName = wldfileNames{k};
                 thisSimgName = simgfileNames{k};
                 inputFullFileName = fullfile(input_folder, thisFileName);
-                outputBaseFileName = sprintf('%s.jgw', thisSimgName(1:end-4)); %TODO: make use the appropriate ext
+                outputBaseFileName = sprintf('%s%s', thisSimgName(1:end-4), wld_ext); %TODO: make use the appropriate ext
                 outputFullFileName = fullfile(output_folder, outputBaseFileName);
                 copyfile(inputFullFileName, outputFullFileName);
             end
