@@ -19,19 +19,35 @@ if ischar(input_folder) % The user did not hit "Cancel"
         warndlg('No output folder specified, exiting script...')
         return
     else
-        a=[dir([input_folder '/*.jpg']); dir([input_folder '/*.bmp']); dir([input_folder '/*.tif'])];
+        a=[dir([input_folder '/*.jpg']); dir([input_folder '/*.bmp']); dir([input_folder '/*.tif']); dir([input_folder '/*.png'])];
         video_length=size(a,1);
-        
+        b=[dir([input_folder '/*.jgw']); dir([input_folder '/*.tfw']); dir([input_folder '/*.pgw']); dir([input_folder '/*.wld'])];
+        [~,~,image_ext] = fileparts(a(1).name);
         prompt = {'Image file extension:','Number of frames:', 'Gaussian levels:'};
         title = 'Stabilization settings';
         dims = [1 35];
-        definput = {'jpg',num2str(video_length),'1'};
+        definput = {image_ext(end-2:end),num2str(video_length),'1'};
         answer = inputdlg(prompt,title,dims,definput);
         file_type = answer{1};
         video_length = str2num(answer{2});
         Gauss_levels = str2num(answer{3});
        
         stabilize(input_folder, output_folder, file_type, video_length, Gauss_levels)
+        if ~isempty(b)  % world files exist
+            disp('world files exist')
+            c=[dir([output_folder '/*.jpg']); dir([output_folder '/*.bmp']); dir([output_folder '/*.tif']); dir([output_folder '/*.png'])];
+            wldfileNames = { b.name };
+            simgfileNames = { c.name };
+            [~,~,wld_ext] = fileparts(b(1).name);
+            for k = 1 : length(b)
+                thisFileName = wldfileNames{k};
+                thisSimgName = simgfileNames{k};
+                inputFullFileName = fullfile(input_folder, thisFileName);
+                outputBaseFileName = sprintf('%s%s', thisSimgName(1:end-4), wld_ext); %TODO: make use the appropriate ext
+                outputFullFileName = fullfile(output_folder, outputBaseFileName);
+                copyfile(inputFullFileName, outputFullFileName);
+            end
+        end
     end
 else
     return
