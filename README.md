@@ -10,10 +10,14 @@ We have been using this modified version of the original code in the US Geologic
 
 ## Example
 The `example` folder contains a sample of frames captured by a drone as a part of the a US Geological Survey study evaulating use of drone video for estimating river flow rates (called discharge). These frames are reduced in size to enable for fast processing, since this is just an example. To use the modified version of this code, run `VideoStabilizer.m`. This will prompt you to select a folder containing image frames to stabilize. Navigate to the folder containing your images and choose "Select Folder". You will then be prompted to select or create a folder to store results. Either navigate or create a folder, and then choose "Select Folder" to continue (Note: the program will assume you wish to save results in the same folder if you do not specify another location. Resulting images are prepended with `s_`, so original frames will be preserved.). Next a modal window will open showing input parameters to `stabilize.m`:
+
 ![input](imageparams.png)
 
 Once you confirm these choices, a new window will open displaying the first frame in the dataset and prompting the user to create a mask. Draw a mask for regions of the frame which contain motion that is not part of the camera movement (e.g. moving water, people walking, cars driving by, etc.). Double click into your mask to set it and start the processing procedure.
+
 ![roi](selectroi.png)
+
+Once the process has completed, new stabilized images will be created in the folder you speficed for outputs. These images will have a prefix of `s_` to indicate that they have been stabilized. The `example\stabilize` folder contains output from this script using the mask ROI shown in the image above.
 
 # Video Stabilizer
 This MATLAB program takes in a handheld (or otherwise shaky or unstable) video and outputs a motion stabilized version of it.
