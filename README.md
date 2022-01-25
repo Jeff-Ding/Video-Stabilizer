@@ -1,3 +1,24 @@
+# Purpose of this Clone
+I (@frank-engel-usgs) created this clone of the original [Video Stabilizer](https://github.com/Jeff-Ding/Video-Stabilizer) project in order to modify it for use in stabilizing video shot mainly from Drones that are being used to derive surface velocities with image velocimetry techniques like PIV. I wanted to be able to create new functionality without issuing Pull Requests (at least for now). My additions are superficial mostly, and credit should be given to Jeff Ding and his team for the original methods. 
+
+Summary of changes:
+* Created a very simple UI which will prompt users to select the folder where image frames to be processed are located, then specific the folder where stabilized images should be located.
+* Added the ability to specify a mask (using `roipoly`) to exclude unintended motion from analysis. This was necessary for my use case because, generally I am correcting motion from a drone looking at a flowing river. By masking out the moving water, the end result is a stabilized view of the river.
+* I modified how `stabilize.m` works to read in frame pairs rather than a large stack array of all imagery. This reduced memory useage dramitically, allowing for faster processing, and also ensuring that `stabilize.m` would not crash for larger datasets (either image size/resolution or number of input frames). 
+
+We have been using this modified version of the original code in the US Geologicla Survey for a couple of years now with some suucess. There are still some known issues. For example, the first frame (last output by `stabilize.m`) tends to be incorrect. Future improvements can fix this. 
+
+## Example
+The `example` folder contains a sample of frames captured by a drone as a part of the a US Geological Survey study evaulating use of drone video for estimating river flow rates (called discharge). These frames are reduced in size to enable for fast processing, since this is just an example. To use the modified version of this code, run `VideoStabilizer.m`. This will prompt you to select a folder containing image frames to stabilize. Navigate to the folder containing your images and choose "Select Folder". You will then be prompted to select or create a folder to store results. Either navigate or create a folder, and then choose "Select Folder" to continue (Note: the program will assume you wish to save results in the same folder if you do not specify another location. Resulting images are prepended with `s_`, so original frames will be preserved.). Next a modal window will open showing input parameters to `stabilize.m`:
+
+![input](imageparams.png)
+
+Once you confirm these choices, a new window will open displaying the first frame in the dataset and prompting the user to create a mask. Draw a mask for regions of the frame which contain motion that is not part of the camera movement (e.g. moving water, people walking, cars driving by, etc.). Double click into your mask to set it and start the processing procedure.
+
+![roi](selectroi.png)
+
+Once the process has completed, new stabilized images will be created in the folder you speficed for outputs. These images will have a prefix of `s_` to indicate that they have been stabilized. The `example\stabilize` folder contains output from this script using the mask ROI shown in the image above.
+
 # Video Stabilizer
 This MATLAB program takes in a handheld (or otherwise shaky or unstable) video and outputs a motion stabilized version of it.
 
