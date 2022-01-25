@@ -11,10 +11,10 @@
 clc
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel')
 [input_folder] = ...
-    uigetdir(pwd, 'Select folder containing images to stabilize');
+    uigetdir([pwd filesep 'example'], 'Select folder containing images to stabilize');
 if ischar(input_folder) % The user did not hit "Cancel"
     [output_folder] = ...
-        uigetdir(pwd, 'Select or create folder to store stabilized images');
+        uigetdir(input_folder, 'Select or create folder to store stabilized images');
     if ~ischar(output_folder) % The user hit cancel, disp warning and close
         warndlg('No output folder specified, exiting script...')
         return
